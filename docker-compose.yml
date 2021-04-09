@@ -1,0 +1,9 @@
+version: "3"
+services:
+# below specify each container/service details
+# Starting with name and then configs for each.
+  article-analyzer:
+    build: .
+    ports:
+    - 5000:80
+
