@@ -1,0 +1,33 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: traefik:v2.4
+    # in command we pass all the static configurations thar are to be applied
+    # in the label section of each services we can specify the configs specific to that container.
+    command:
+      - --log.level=DEBUG
+      - --api.insecure=true
+      # enable docker in traefik so that it can read labels from other services
+      - --providers.docker=true
+      # don't expose all docker services by default
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      # enable the access log, with HTTP requests
+      - --accesslog
+    ports:
+      - 80:80
+    volumes:
+      # add docker.sock as the mounted voulme so that traefik can read labels of other services
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: always
+    networks:
+          # Use the public network created to be shared between Traefik and
+          # any other service that needs to be publicly available with HTTPS
+          - traefik-public
+
+
+networks:
+  traefik-public:
+    external: true
